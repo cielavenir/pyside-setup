@@ -90,7 +90,11 @@ PyObject *create(PyObject *obj, PySideWeakRefFunction func, void *userData)
 
     if (Py_TYPE(PySideCallableObjectTypeF()) == 0)
     {
+#if PY_VERSION_HEX >= 0x030a0000
+        Py_SET_TYPE(PySideCallableObjectTypeF(), &PyType_Type);
+#else
         Py_TYPE(PySideCallableObjectTypeF()) = &PyType_Type;
+#endif
         PyType_Ready(PySideCallableObjectTypeF());
     }
 
@@ -111,4 +115,3 @@ PyObject *create(PyObject *obj, PySideWeakRefFunction func, void *userData)
 }
 
 } }  //namespace
-

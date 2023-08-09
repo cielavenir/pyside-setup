@@ -741,7 +741,11 @@ newTypeWithName(const char *name,
         copyNumberMethods(numbers_fromFlag, newslots, &idx);
     newspec.slots = newslots;
     auto *type = reinterpret_cast<PyTypeObject *>(SbkType_FromSpec(&newspec));
+#if PY_VERSION_HEX >= 0x030a0000
+    Py_SET_TYPE(type, SbkEnumType_TypeF());
+#else
     Py_TYPE(type) = SbkEnumType_TypeF();
+#endif
 
     auto *enumType = reinterpret_cast<SbkEnumType *>(type);
     PepType_SETP(enumType)->cppName = cppName;
