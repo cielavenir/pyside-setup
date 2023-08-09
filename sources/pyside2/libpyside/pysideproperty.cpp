@@ -104,6 +104,9 @@ static PyType_Slot PySidePropertyType_slots[] = {
     {Py_tp_init, (void *)qpropertyTpInit},
     {Py_tp_new, (void *)qpropertyTpNew},
     {Py_tp_getset, PySidePropertyType_getset},
+#if PY_VERSION_HEX >= 0x030b0000
+    {Py_tp_del, reinterpret_cast<void *>(PyObject_GC_Del)},
+#endif
     {0, 0}
 };
 // Dotted modulename is crucial for SbkType_FromSpec to work. Is this name right?
@@ -249,6 +252,9 @@ static void qpropertyDeAlloc(PyObject *self)
         // This was not needed before Python 3.8 (Python issue 35810)
         Py_DECREF(Py_TYPE(self));
     }
+#if PY_VERSION_HEX >= 0x030b0000
+    PyObject_GC_UnTrack(self);
+#endif
     Py_TYPE(self)->tp_free(self);
 }
 
