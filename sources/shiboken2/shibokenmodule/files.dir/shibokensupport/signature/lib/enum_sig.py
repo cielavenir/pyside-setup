@@ -130,7 +130,8 @@ class ExactEnumerator(object):
                 if signature is not None:
                     functions.append((func_name, thing))
             elif type(type(thing)) is EnumType:
-                enums.append((thing_name, thing))
+                if not thing_name.startswith("_"):
+                    enums.append((thing_name, thing))
         init_signature = getattr(klass, "__signature__", None)
         enums.sort(key=lambda tup: tup[1])  # sort by enum value
         self.fmt.have_body = bool(subclasses or functions or enums or init_signature)
